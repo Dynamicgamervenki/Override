@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.iOS;
 
 public class Player : MonoBehaviour
 {
@@ -14,10 +16,13 @@ public class Player : MonoBehaviour
     #region privateVariables
     private NavMeshAgent navMeshAgent;
     private Vector3 clickPosition;
+    private BaseAction pendingAction = null;
+    private ActionStates playerState;
     #endregion
 
     private void Start()
     {
+        playerState = ActionStates.Idle;
         navMeshAgent = GetComponent<NavMeshAgent>();
         gameInput.OnMoveAction += GameInput_OnMoveAction;
     }
@@ -36,9 +41,16 @@ public class Player : MonoBehaviour
     {
         RaycastHit hit;
         clickPosition = Mouse.current.position.ReadValue();
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(clickPosition), out hit, 100, clickableMask))
+        bool raycast = (Physics.Raycast(Camera.main.ScreenPointToRay(clickPosition), out hit, 100, clickableMask));
+
+        if(!raycast) return;
+        navMeshAgent.destination = hit.point;
+        playerState = ActionStates.Idle;
+        if(hit.transform.TryGetComponent<BaseAction>(out BaseAction action))
         {
-            navMeshAgent.destination = hit.point;
+            navMeshAgent.stoppingDistance = action.GetStoppingDistance();
+            pendingAction = action;
+            StartCoroutine(CheckIfNeedToPerformAction());
         }
     }
 
@@ -51,7 +63,38 @@ public class Player : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * lookRotationSpeed);
     }
 
+    IEnumerator CheckIfNeedToPerformAction()
+    {
+        while (!HasReachedDestination()) 
+        {
+            yield return null;
+        }
+        pendingAction.PerformAction();
+        playerState = pendingAction.GetActionState();
+        pendingAction = null;
+    }
+
+    private bool HasReachedDestination()
+    {
+        if (navMeshAgent.pathPending) return false;
+
+        if (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance) return false;
+
+        if (navMeshAgent.hasPath && navMeshAgent.velocity.sqrMagnitude != 0f) return false;
+
+        return true;
+    }
+
     #region Getteres
     public Vector3 GetVelocity() => navMeshAgent.velocity;
+    public ActionStates GetPlayerActionState() => playerState;
     #endregion
 }
+
+public enum ActionStates
+{
+    Idle,
+    Crouching,
+    Hacking
+}
+
