@@ -3568,6 +3568,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1852613939087461953}
   - component: {fileID: 7849840339305976270}
+  - component: {fileID: 6995187565306337989}
   m_Layer: 0
   m_Name: ElectroBot
   m_TagString: Untagged
@@ -3590,6 +3591,7 @@ Transform:
   m_Children:
   - {fileID: 723966828458698832}
   - {fileID: 4447666985881870662}
+  - {fileID: 7615581558432346861}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7849840339305976270
@@ -3604,9 +3606,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95b52cb07d2453a4d943c1106f8f597f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyState: 1
+  enemyState: 0
   patrolSpeed: 10
   splineContainer: {fileID: 0}
+  thrusterEffect: {fileID: 8315454145806393314}
+  explosionEffect: {fileID: 8303072618986563263}
+--- !u!135 &6995187565306337989
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7956846762813212292}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.93
+  m_Center: {x: 0, y: 0.92, z: 0}
 --- !u!1 &8118650976269810334
 GameObject:
   m_ObjectHideFlags: 0
@@ -3617,6 +3642,7 @@ GameObject:
   m_Component:
   - component: {fileID: 723966828458698832}
   - component: {fileID: 1008940372875151096}
+  - component: {fileID: 2875983140183346462}
   m_Layer: 0
   m_Name: robotSphere
   m_TagString: Untagged
@@ -3650,7 +3676,7 @@ Animator:
   m_GameObject: {fileID: 8118650976269810334}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: bff429107601444d59c67940e6ad78c4, type: 3}
-  m_Controller: {fileID: 9100000, guid: 8df5b386369d54778a922298504d1aba, type: 2}
+  m_Controller: {fileID: 9100000, guid: 6e70cefebb6c36c419044341946902ee, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -3662,6 +3688,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2875983140183346462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8118650976269810334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64efeef8290906e4badb20bc49f2d1c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  electroBot: {fileID: 7849840339305976270}
 --- !u!1 &8183371700067991233
 GameObject:
   m_ObjectHideFlags: 0
@@ -4338,6 +4377,81 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1001 &4882871915812918114
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1852613939087461953}
+    m_Modifications:
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.099999905
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.8130002
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.06400013
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3549001278489957077, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_Name
+      value: CFXR Explosion Smoke 2 Solo (HDR)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3549001278489957077, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5868673819092155035, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+      propertyPath: m_Intensity
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+--- !u!4 &7615581558432346861 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3056969116488475023, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+  m_PrefabInstance: {fileID: 4882871915812918114}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &8303072618986563263 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3528854725731939805, guid: 32d2a32e45bd2fd48b354d5668e59feb, type: 3}
+  m_PrefabInstance: {fileID: 4882871915812918114}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5183408566187389556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4398,6 +4512,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Thruster
       objectReference: {fileID: 0}
+    - target: {fileID: 8967422589817255134, guid: 859301e030b06874a84fb493f5fd6a41, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4406,5 +4524,10 @@ PrefabInstance:
 --- !u!4 &4447666985881870662 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8815342377861927730, guid: 859301e030b06874a84fb493f5fd6a41, type: 3}
+  m_PrefabInstance: {fileID: 5183408566187389556}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &8315454145806393314 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3785635979575307670, guid: 859301e030b06874a84fb493f5fd6a41, type: 3}
   m_PrefabInstance: {fileID: 5183408566187389556}
   m_PrefabAsset: {fileID: 0}

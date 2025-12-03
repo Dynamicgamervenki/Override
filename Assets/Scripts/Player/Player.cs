@@ -1,7 +1,10 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.iOS;
 
@@ -11,6 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask clickableMask = 6;
     [SerializeField] private float lookRotationSpeed = 10;
+    [SerializeField] private float hackRadius = 5.0f;
     #endregion
 
     #region privateVariables
@@ -18,6 +22,7 @@ public class Player : MonoBehaviour
     private Vector3 clickPosition;
     private BaseAction pendingAction = null;
     private ActionStates playerState;
+    private bool canHack = false;
     #endregion
 
     private void Start()
@@ -29,7 +34,8 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        FaceTarget();
+         FaceTarget(navMeshAgent.destination);
+  
     }
 
     private void GameInput_OnMoveAction(object sender, System.EventArgs e)
@@ -44,6 +50,8 @@ public class Player : MonoBehaviour
         bool raycast = (Physics.Raycast(Camera.main.ScreenPointToRay(clickPosition), out hit, 100, clickableMask));
 
         if(!raycast) return;
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
         navMeshAgent.destination = hit.point;
         playerState = ActionStates.Idle;
         if(hit.transform.TryGetComponent<BaseAction>(out BaseAction action))
@@ -54,11 +62,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void FaceTarget()
+    private void FaceTarget(Vector3 targetPosition)
     {
         if(navMeshAgent.velocity == Vector3.zero) return;
 
-        Vector3 direction = (navMeshAgent.destination - transform.position).normalized;
+        Vector3 direction = (targetPosition - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * lookRotationSpeed);
     }
@@ -84,6 +92,53 @@ public class Player : MonoBehaviour
 
         return true;
     }
+
+    private GameObject selectedHackableIObject;
+    public event Action<GameObject> hackableFound;
+    private Collider[] hackableColliders;
+    public void CheckForHackableItems()
+    {
+        hackableColliders = Physics.OverlapSphere(transform.position + new Vector3(0,5,0), hackRadius);
+        if (hackableColliders.Length == 0) return;
+
+
+        foreach(var col in hackableColliders)
+        {
+            if(col.TryGetComponent<IHackable>(out IHackable i))
+            {
+                selectedHackableIObject = col.transform.gameObject;
+                hackableFound.Invoke(selectedHackableIObject);
+                break;
+            }
+        }
+    }
+
+    public void Hack()
+    {
+        if (!selectedHackableIObject) { return; }
+
+        if(selectedHackableIObject.TryGetComponent<IHackable>(out IHackable hack))
+        {
+           // transform.DORotate(selectedHackableIObject.transform.position,0.1f,RotateMode.Fast);
+            hack.Hack();
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0, 5, 0), hackRadius);
+
+       // if(colliders.Length == 0) return;
+
+       // Gizmos.color = Color.red;
+       // foreach (var h in colliders)
+       // {
+       //     Gizmos.DrawSphere(h.transform.position, 2.0f);
+      //  }
+    }
+
+
 
     #region Getteres
     public Vector3 GetVelocity() => navMeshAgent.velocity;

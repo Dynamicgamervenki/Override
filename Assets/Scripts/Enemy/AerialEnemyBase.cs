@@ -48,6 +48,7 @@ public enum EnemyState
 {
     idle,
     patroling,
-    combat
+    combat,
+    hacked
 }
 
