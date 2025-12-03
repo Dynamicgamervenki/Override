@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.AI;
@@ -96,22 +97,49 @@ public class Player : MonoBehaviour
     private GameObject selectedHackableIObject;
     public event Action<GameObject> hackableFound;
     private Collider[] hackableColliders;
+    //public void CheckForHackableItems()
+    //{
+    //    hackableColliders = Physics.OverlapSphere(transform.position + new Vector3(0,5,0), hackRadius);
+    //    if (hackableColliders.Length == 0) return;
+
+
+    //    foreach(var col in hackableColliders)
+    //    {
+    //        if(col.TryGetComponent<IHackable>(out IHackable i))
+    //        {
+    //            selectedHackableIObject = col.transform.gameObject;
+    //            hackableFound.Invoke(selectedHackableIObject);
+    //            break;
+    //        }
+    //    }
+    //}
+
+    private int currentHackableIndex = -1;
+
     public void CheckForHackableItems()
     {
-        hackableColliders = Physics.OverlapSphere(transform.position + new Vector3(0,5,0), hackRadius);
-        if (hackableColliders.Length == 0) return;
+        hackableColliders = Physics.OverlapSphere(transform.position + new Vector3(0, 5, 0), hackRadius);
 
+        List<GameObject> hackableObjects = new List<GameObject>();
 
-        foreach(var col in hackableColliders)
+        foreach (var col in hackableColliders)
         {
-            if(col.TryGetComponent<IHackable>(out IHackable i))
+            if (col.TryGetComponent<IHackable>(out IHackable h))
             {
-                selectedHackableIObject = col.transform.gameObject;
-                hackableFound.Invoke(selectedHackableIObject);
-                break;
+                hackableObjects.Add(col.gameObject);
             }
         }
+
+        if (hackableObjects.Count == 0)
+            return;
+
+
+        currentHackableIndex = (currentHackableIndex + 1) % hackableObjects.Count;
+
+        selectedHackableIObject = hackableObjects[currentHackableIndex];
+        hackableFound.Invoke(selectedHackableIObject);
     }
+
 
     public void Hack()
     {
