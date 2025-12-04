@@ -12,6 +12,8 @@ public class AcessCard : MonoBehaviour, IHackable
 
     public bool IsHacked { get; set; }
 
+    public HackType HackType => HackType.CanBeReHacked;
+
     private void Start()
     {
         _renderer = GetComponent<Renderer>();

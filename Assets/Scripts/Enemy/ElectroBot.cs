@@ -8,6 +8,8 @@ public class ElectroBot : AerialEnemyBase, IHackable
     [SerializeField] private ParticleSystem thrusterEffect;
     [SerializeField] private ParticleSystem explosionEffect;
 
+    public HackType HackType => HackType.DestroyOnHack;
+
     public event Action OnHacked;
 
     protected override void OnStart()
