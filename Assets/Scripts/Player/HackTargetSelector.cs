@@ -18,23 +18,42 @@ public class HackTargetSelector : MonoBehaviour
 
     private void Update()
     {
-        if (!target)
-        {
-            lineRenderer.SetPosition(0,Vector3.zero);
-            lineRenderer.SetPosition(1,Vector3.zero);
-            return;
-        }
+        if (!target && lineRenderer.positionCount != 0) { ResetLineRenderer(); }
         UpdateLineRenderer();
     }
 
     private void Player_hackableFound(GameObject obj)
     {
        target = obj;
+       UpdateLineRendere();
+       if (obj.TryGetComponent<IHackable>(out IHackable h))
+        {
+            h.OnHacked += H_OnHacked;
+        }
+    }
+
+    private void H_OnHacked()
+    {
+        ResetLineRenderer();
+    }
+
+    private void UpdateLineRendere()
+    {
+        lineRenderer.positionCount = 2;
+    }
+
+    private void ResetLineRenderer()
+    {
+        if (lineRenderer.positionCount == 0) return;
+
+        lineRenderer.SetPosition(0, Vector3.zero);
+        lineRenderer.SetPosition(1, Vector3.zero);
+        lineRenderer.positionCount = 0;
     }
 
     private void UpdateLineRenderer()
     {
-        if(!lineRenderer) return;
+        if(!lineRenderer || !target || !player || lineRenderer.positionCount == 0) return;
 
         lineRenderer.SetPosition(0, player.transform.position + new Vector3(0,2.5f,0));
         lineRenderer.SetPosition(1, target.transform.position);

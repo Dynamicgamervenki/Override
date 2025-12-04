@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class ElectroBot : AerialEnemyBase, IHackable
     [SerializeField] private ParticleSystem thrusterEffect;
     [SerializeField] private ParticleSystem explosionEffect;
 
+    public event Action OnHacked;
 
     protected override void OnStart()
     {
@@ -34,6 +36,7 @@ public class ElectroBot : AerialEnemyBase, IHackable
         StartCoroutine(ParticleOnOffEffect(thrusterEffect, 2, 0.5f));
         StartCoroutine(PlayParticleEffect(explosionEffect,3.0f));
 
+        OnHacked?.Invoke();
         Destroy(gameObject,1.5f + explosionEffect.main.duration);
 
     }

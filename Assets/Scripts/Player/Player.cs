@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask clickableMask = 6;
     [SerializeField] private float lookRotationSpeed = 10;
     [SerializeField] private float hackRadius = 5.0f;
+    [SerializeField] private Vector3 hackRadiusOffset = new Vector3(0, 5, 0);
     #endregion
 
     #region privateVariables
@@ -118,7 +119,7 @@ public class Player : MonoBehaviour
 
     public void CheckForHackableItems()
     {
-        hackableColliders = Physics.OverlapSphere(transform.position + new Vector3(0, 5, 0), hackRadius);
+        hackableColliders = Physics.OverlapSphere(transform.position + hackRadiusOffset, hackRadius);
 
         List<GameObject> hackableObjects = new List<GameObject>();
 
