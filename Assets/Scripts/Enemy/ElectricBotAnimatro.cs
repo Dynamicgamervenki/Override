@@ -1,25 +1,3 @@
-using UnityEngine;
-
-public class ElectricBotAnimatro : MonoBehaviour
-{
-    private Animator animator;
-    [SerializeField] private ElectroBot electroBot;
-
-    #region animatorParameters
-    //private static readonly int RollHash = Animator.StringToHash("Roll_Anim");
-    private static readonly int RollHash = Animator.StringToHash("Roll");
-    #endregion
-
-    private void Start()
-    {
-        animator = GetComponent<Animator>();
-    }
-
-    private void Update()
-    {
-        if (electroBot.enemyState == EnemyState.hacked)
-        {
-            animator.SetBool(RollHash, true);   
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:0070fe8f5656563f6bdc69fddc705065d3e4b736117831f4668ef6fd597f1e96
+size 630

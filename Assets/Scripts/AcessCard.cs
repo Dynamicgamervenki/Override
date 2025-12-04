@@ -1,30 +1,3 @@
-using System;
-using UnityEngine;
-using UnityEngine.Rendering;
-
-public class AcessCard : MonoBehaviour, IHackable
-{
-    Renderer _renderer;
-    Material material;
-    public GameEvent acessCardHacked;
-
-    public event Action OnHacked;
-
-    public bool IsHacked { get; set; }
-
-    public HackType HackType => HackType.CanBeReHacked;
-
-    private void Start()
-    {
-        _renderer = GetComponent<Renderer>();
-        material = _renderer.material;
-    }
-
-    public void Hack()
-    {
-        IsHacked = true;
-        material.SetColor("_EmissionColor", Color.red * 5f);
-        acessCardHacked.Raise();
-        OnHacked?.Invoke();
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:ebe54c1fb5f7bf8a3d6dc1e59e7e4b921b639687cd60a76a327637541d9b85c6
+size 670

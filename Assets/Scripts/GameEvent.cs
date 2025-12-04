@@ -1,17 +1,3 @@
-using UnityEngine;
-using System.Collections.Generic;
-
-[CreateAssetMenu(menuName = "Events/GameEvent")]
-public class GameEvent : ScriptableObject
-{
-    private readonly List<GameEventListener> listeners = new();
-
-    public void Raise()
-    {
-        for (int i = listeners.Count - 1; i >= 0; i--)
-            listeners[i].OnEventRaised();
-    }
-
-    public void Register(GameEventListener listener) => listeners.Add(listener);
-    public void Unregister(GameEventListener listener) => listeners.Remove(listener);
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:595539d633eb98a34e451eae43b524c6b59b7dd990e6854935ed19e8be927de9
+size 532

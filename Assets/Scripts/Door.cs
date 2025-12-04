@@ -1,18 +1,3 @@
-using DG.Tweening;
-using UnityEngine;
-
-public class Door : MonoBehaviour
-{
-    bool isDoorOpen = false;
-
-    public void ToggleDoor()
-    {
-        if ((isDoorOpen = !isDoorOpen)) OpenDoor();
-        else CloseDoor();
-    }
-
-
-    private void OpenDoor() => transform.DORotate(new Vector3(0, -90, 0), 1f, RotateMode.Fast);
-
-    private void CloseDoor() => transform.DORotate(new Vector3(0, 0, 0), 1f, RotateMode.Fast);
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:07521942a894c14fed6c6cb9caea6b0790ede0c67caed54e3138da03adc48686
+size 438

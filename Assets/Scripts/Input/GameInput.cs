@@ -1,28 +1,3 @@
-using UnityEngine;
-using System;
-
-public class GameInput : MonoBehaviour
-{
-    InputSystem_Actions inputActions;
-
-    #region Inputevents
-    public event EventHandler OnMoveAction;
-    #endregion 
-
-    private void Start()
-    {
-        inputActions = new InputSystem_Actions();
-        inputActions.Player.Enable();
-        inputActions.Player.Move.performed += Move_performed;
-    }
-
-    private void Move_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        OnMoveAction?.Invoke(obj, EventArgs.Empty);
-    }
-
-    private void OnDisable()
-    {
-        inputActions.Player.Disable();
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:059a8d78d6492fb62e273216b18f8195d92c54a78b36cb5a20d8e899f5fe8f8d
+size 651
