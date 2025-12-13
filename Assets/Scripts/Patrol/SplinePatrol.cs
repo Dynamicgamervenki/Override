@@ -199,6 +199,15 @@ public class SplinePatrol
     public bool HasReachedInitialPointOnSpline() => _hasReachedSpline;
 
 
+    //test
+// added a public initializer so callers can set start percent and mark the bot as already on-spline
+public void SetStartPercentage(float percent)
+{
+    DistancePercentage = Mathf.Repeat(percent, 1f);
+    RefreshSplineLength();
+    _hasReachedSpline = true;
+}
+
 
 }
 

@@ -42,7 +42,7 @@ public class HackController : MonoBehaviour
     private void ScanHandler()
     {
         if (!IsActive) return;
-
+    
         _manager.CheckForHackableItems(
             transform.position,
             scanOffset, 
@@ -50,10 +50,19 @@ public class HackController : MonoBehaviour
             transform
         );
     }
-
     private void HackHandler()
     {
         if (!IsActive) return;
+
+        if (TryGetComponent(out Player p))
+        {
+            if (p.GetPlayerActionState() == ActionStates.UltimateAbility)
+            {
+                UltimateAtackHackHandler();
+                return;
+            }
+            _manager.Hack();
+        }
         _manager.Hack();
     }
 
@@ -68,7 +77,6 @@ public class HackController : MonoBehaviour
         if(!IsActive) return;
         _manager.Stun();
     }
-
     
     private void SubscribeInputs()
     {
@@ -78,6 +86,7 @@ public class HackController : MonoBehaviour
         router.OnHackRequested += HackHandler;
         router.OnHijackReqested += HijackHandler;
         router.OnStunRequested += StunHandler;
+        router.OnUltimateAttackRequested += UltimateAttackScanHandler;
     }
     private void UnsubscribeInputs()
     {
@@ -87,8 +96,32 @@ public class HackController : MonoBehaviour
         router.OnHackRequested -= HackHandler;
         router.OnHijackReqested -= HijackHandler;
         router.OnStunRequested -= StunHandler;
-        
+        router.OnUltimateAttackRequested -= UltimateAttackScanHandler;
     }
+
+    #region UltiamteateHack
+    
+    bool _ultimateAttackScanDone = false;
+    private void UltimateAttackScanHandler()
+    {
+        if (!IsActive)
+            return;
+        
+        if (!TryGetComponent<Player>(out var player)) return;
+        if (player.GetPlayerActionState() != ActionStates.UltimateAbility && !_ultimateAttackScanDone) return;
+        _ultimateAttackScanDone = true;
+        _manager.ToogleAllBots(transform.position, scanOffset, scanRadius, transform);
+    }
+
+    private void UltimateAtackHackHandler()
+    {
+        if (!IsActive) return;
+        
+        var canPerformUltimateHack = TryGetComponent<Player>(out var player) && player.GetPlayerActionState() == ActionStates.UltimateAbility;
+        if(!canPerformUltimateHack) return;
+        StartCoroutine(_manager.HackAllBots());
+    }
+    #endregion
 
     private void OnDrawGizmosSelected()
     {

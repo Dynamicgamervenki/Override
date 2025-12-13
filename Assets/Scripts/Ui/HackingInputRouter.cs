@@ -6,19 +6,22 @@ using UnityEngine.UI;
 
 public class HackingInputRouter : MonoBehaviour
 {
-    [FormerlySerializedAs("btnToogle")] [FormerlySerializedAs("btn_Toogle")] [SerializeField] private Button btnToggle;
-    [FormerlySerializedAs("btn_hack")] [SerializeField] private Button btnHack;
+    #region Buttons
+    [SerializeField] private Button btnToggle;
+    [SerializeField] private Button btnHack;
     [SerializeField] private Button btnSwitchBack;
-    [SerializeField]  Button btnHijack;
+    [SerializeField] private Button btnHijack;
     [SerializeField] private Button btnSelfDestruct;
     [SerializeField] private Button btnPatrolRight;
     [SerializeField] private Button btnPatrolLeft;
     [SerializeField] private Button btnStun;
+    [SerializeField] private Button btnUltimateAttack;
+    #endregion
     
-    [FormerlySerializedAs("survilanceUi")] [FormerlySerializedAs("SurvilanceUi")] [SerializeField] private GameObject surveillanceUI;
-    [SerializeField] private Player player;
-
+    private Player _player;
+    [SerializeField] private GameObject surveillanceUI;
     [SerializeField] private GameObject forceField;  //temp
+
 
     #region Events
     public event Action OnScanRequested;
@@ -29,6 +32,7 @@ public class HackingInputRouter : MonoBehaviour
     public event Action OnLeftPatrolPathSelected;
     public event Action OnRightPatrolPathSelected;
     public event Action OnStunRequested;
+    public event Action OnUltimateAttackRequested;
     #endregion
     
     public static HackingInputRouter Instance { get; private set; }
@@ -43,30 +47,34 @@ public class HackingInputRouter : MonoBehaviour
 
     private void Start()
     {
-        player.PlayerStateChanged += PlayerOnPlayerStateChanged;
-        
-        btnToggle.onClick.AddListener(() => OnScanRequested?.Invoke());
-        btnHack.onClick.AddListener(() => OnHackRequested?.Invoke());
-        btnHijack.onClick.AddListener(() => OnHijackReqested?.Invoke());
-        btnStun.onClick.AddListener(() => OnStunRequested?.Invoke());
-
+        _player = FindFirstObjectByType<Player>();
+        _player.PlayerStateChanged += PlayerOnPlayerStateChanged;
+        SetButtonsInactive();
+        SetupListners();
         HackingCoordinator.Instance.TargetFound += obj =>
         {
             btnHijack.gameObject.SetActive(obj.TryGetComponent(out IHijack _));
             btnStun.gameObject.SetActive(obj.TryGetComponent(out IStun _));
         };
-        
-        SetButtonsInactive();
+    }
+
+    private void SetupListners()
+    {
+        btnToggle.onClick.AddListener(() => OnScanRequested?.Invoke());
+        btnHack.onClick.AddListener(() => OnHackRequested?.Invoke());
+        btnHijack.onClick.AddListener(() => OnHijackReqested?.Invoke());
+        btnStun.onClick.AddListener(() => OnStunRequested?.Invoke());
+        btnUltimateAttack.onClick.AddListener(()=> OnUltimateAttackRequested?.Invoke());
 
         btnSwitchBack.onClick.AddListener(() =>
         {
             OnSwitchBackRequested?.Invoke();
-            player.SetPlayerState(ActionStates.Idle);
+            _player.SetPlayerState(ActionStates.Idle);
         });
         btnSelfDestruct.onClick.AddListener(() =>
         {
             OnSelfDestructRequested?.Invoke();
-            player.SetPlayerState(ActionStates.Idle);
+            _player.SetPlayerState(ActionStates.Idle);
         });
         btnPatrolLeft.onClick.AddListener(() =>
         {
@@ -78,8 +86,6 @@ public class HackingInputRouter : MonoBehaviour
             OnRightPatrolPathSelected?.Invoke();
             TogglePatrolSelectionUi(false);
         });
-
-
     }
 
     private void SetButtonsInactive()
@@ -90,6 +96,7 @@ public class HackingInputRouter : MonoBehaviour
         btnPatrolLeft.gameObject.SetActive(false);
         btnPatrolRight.gameObject.SetActive(false);
         btnStun.gameObject.SetActive(false);
+        btnUltimateAttack.gameObject.SetActive(false);
     }
 
     private void PlayerOnPlayerStateChanged(ActionStates obj)

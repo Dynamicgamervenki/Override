@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using Unity.Cinemachine;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class HackSystemManager
 {
@@ -130,5 +133,52 @@ public class HackSystemManager
         _selectedHackableIObject = null; 
         _line.ResetLine();  
     }
+
+    #region UltimateHackAbility
+    private List<IDamgable> _allbots;
+    private List<HackLine> _lines;
+    private bool AllbotsSelected = false;
+    public void ToogleAllBots(Vector3 startPosition, Vector3 offset, float radius, Transform parent)
+    {
+        if(AllbotsSelected) return;
+        var colliders = Physics.OverlapSphere(startPosition + offset, radius);
+        _allbots = new List<IDamgable>();
+        _lines = new List<HackLine>();
+        foreach (var col in colliders)
+        {
+            if (!col.TryGetComponent(out IDamgable damgable))
+                continue;
+
+            var hlm = new HackLineManager(_lineRenderer);
+            var line = hlm.CreateLine(parent, col.transform);
+            _allbots.Add(damgable);
+            _lines.Add(line);
+        }
+        AllbotsSelected = true;
+    }
+
+    public IEnumerator HackAllBots()
+    {
+        if(_allbots.Count == 0) yield break;
+
+        foreach (var damgable in _allbots)
+        {
+            damgable.TakeDamage();
+            yield return new WaitForEndOfFrame();
+        }
+
+        ClearAllBots();
+    }
+    
+    public void ClearAllBots()
+    {
+        foreach (var line in _lines)
+        {
+            line.DestroyLine();
+        }
+        _lines.Clear();
+    }
+    #endregion
+    
 
 }

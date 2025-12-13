@@ -168,12 +168,16 @@ public class AerialEnemyBase : MonoBehaviour, IPatrol
     }
     
     public EnemyState GetEnemyState() => _enemyState;
+    public void SetPatrolSpeed(float speed) => patrolSpeed = speed;
+    public void SetSplineContainer(SplineContainer container ) => splineContainer = container;
 
     private void OnDrawGizmos()
     {
         Gizmos.color = junctionColor;
         Gizmos.DrawWireSphere(transform.position + junctionScanOffset, junctionRadius);
     }
+    
+
 }
 
 

@@ -33,6 +33,8 @@ public class Player : MonoBehaviour
         gameInput.OnMoveAction += GameInput_OnMoveAction;
         _hackController = GetComponent<HackController>();
         _hackController.IsActive = true;
+        
+     //   SetPlayerState(ActionStates.UltimateAbility);
     }
     
     private void Update()
@@ -97,8 +99,14 @@ public class Player : MonoBehaviour
     public void SetPlayerState(ActionStates newState)
     {
         _playerState = newState;
-        _hackController.IsActive = newState is ActionStates.Idle or ActionStates.Crouching;
+        _hackController.IsActive = newState is ActionStates.Idle or ActionStates.Crouching or ActionStates.UltimateAbility;
         PlayerStateChanged?.Invoke(newState);
+    }
+    
+    //TEMP
+    public void TunrOnUltimateAbilityMode()
+    {
+        SetPlayerState(ActionStates.UltimateAbility);
     }
 
 
@@ -115,6 +123,7 @@ public enum ActionStates
     Idle,
     Crouching,
     ControllingCctv,
-    Hijack
+    Hijack,
+    UltimateAbility
 }
 

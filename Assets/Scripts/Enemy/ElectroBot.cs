@@ -135,7 +135,7 @@ public class ElectroBot : AerialEnemyBase, IHackable , IDamgable ,IHijack,IStun
         Destroy(gameObject,explosionEffect.main.duration -1.2f);
         StartCoroutine(PlayParticleEffect(explosionEffect));
     }
-    
+
     public void Hijack()
     {
         ChangeEyeColor(Color.red);
@@ -232,5 +232,40 @@ public class ElectroBot : AerialEnemyBase, IHackable , IDamgable ,IHijack,IStun
         StartCoroutine(PlayParticleEffect(thrusterEffect));
     }
 
+    private SplinePatrol _patrol;
+    private int _splineIndex = 0;
+    
+    // File: `Assets/Scripts/Enemy/ElectroBot.cs`
+    public void Initialize(SplineContainer splineContainer, float startPercent, float speed, int splineIndex = 0)
+    {
+        _splineIndex = splineIndex;
+        _patrol = new SplinePatrol(splineContainer, speed);
+        _patrol.SetStartPercentage(startPercent);
+    
+        // place the bot at the start percent
+        Vector3 pos = splineContainer.EvaluatePosition(_splineIndex, _patrol.DistancePercentage);
+        transform.position = pos;
+    
+        // Try to get a Vector3 tangent; if the API returns a scalar, compute direction by sampling ahead
+        Vector3 tangent;
+        try
+        {
+            tangent = splineContainer.EvaluateTangent(_splineIndex, _patrol.DistancePercentage);
+        }
+        catch
+        {
+            // fallback: sample a small delta ahead on the spline to compute direction
+            float delta = 0.001f;
+            float nextPercent = Mathf.Repeat(_patrol.DistancePercentage + delta, 1f);
+            Vector3 nextPos = splineContainer.EvaluatePosition(_splineIndex, nextPercent);
+            tangent = nextPos - pos;
+        }
+    
+        if (tangent.sqrMagnitude > 0.0001f)
+            transform.rotation = Quaternion.LookRotation(tangent.normalized);
+    }
+    
+
     public bool IsStunned { get; set; }
+    
 }
